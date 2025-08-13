@@ -80,15 +80,41 @@ git clone https://github.com/tinygc/gamenumcheck.git
 
 2. Android Studioで開く
 
-3. プロジェクトをビルド
+3. Java環境設定（必要に応じて）
 ```bash
+export JAVA_HOME="C:\Program Files\Android\Android Studio\jbr"
+```
+
+4. プロジェクトをビルド
+```bash
+./gradlew clean
 ./gradlew build
 ```
 
-4. デバイス/エミュレーターで実行
+5. デバイス/エミュレーターで実行
 ```bash
 ./gradlew installDebug
 ```
+
+### ⚠️ トラブルシューティング
+
+#### Gradle kaptプラグインエラーが発生した場合
+```
+Error resolving plugin [id: 'org.jetbrains.kotlin.kapt', version: '2.0.21']
+```
+
+**解決方法**: トップレベルの`build.gradle.kts`にプラグインを追加済みです：
+```kotlin
+plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+}
+```
+
+この設定により、Gradleビルドエラーは解決済みです。
 
 ## 🧪 テスト実行
 
@@ -98,6 +124,31 @@ git clone https://github.com/tinygc/gamenumcheck.git
 
 # UIテスト実行  
 ./gradlew connectedAndroidTest
+```
+
+### ✅ ビルド状況
+- **ユニットテスト**: ✅ 全6テストケース実行成功
+- **デバッグビルド**: ✅ APK生成成功
+- **GetHintUseCase**: ✅ すべてのヒント生成パターン検証済み
+
+## 🔔 開発者通知システム
+
+プロジェクトには汎用的なWindows通知システムが組み込まれています：
+
+### 通知スクリプト
+- **汎用通知**: `notify.ps1` - メッセージ、タイトル、タイプを指定可能
+- **レガシー**: `notify-completion.ps1` - タスク完了専用（互換性維持）
+
+### 使用例
+```powershell
+# タスク完了通知
+powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Task completed!" -Type "Information"
+
+# ユーザー入力待ち
+powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Please confirm" -Type "Question"
+
+# エラー通知
+powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Error occurred" -Type "Error"
 ```
 
 ## 📁 主要ファイル
