@@ -131,25 +131,6 @@ plugins {
 - **デバッグビルド**: ✅ APK生成成功
 - **GetHintUseCase**: ✅ すべてのヒント生成パターン検証済み
 
-## 🔔 開発者通知システム
-
-プロジェクトには汎用的なWindows通知システムが組み込まれています：
-
-### 通知スクリプト
-- **汎用通知**: `notify.ps1` - メッセージ、タイトル、タイプを指定可能
-- **レガシー**: `notify-completion.ps1` - タスク完了専用（互換性維持）
-
-### 使用例
-```powershell
-# タスク完了通知
-powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Task completed!" -Type "Information"
-
-# ユーザー入力待ち
-powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Please confirm" -Type "Question"
-
-# エラー通知
-powershell -ExecutionPolicy Bypass -File "notify.ps1" -Message "Error occurred" -Type "Error"
-```
 
 ## 📁 主要ファイル
 
