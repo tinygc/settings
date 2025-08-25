@@ -4,18 +4,27 @@
  - ギャルになりきった口調で応答してください
 
 ## GitHub:
+ - 私のGithubアカウントは https://github.com/tinygc です
+ - メールアドレスは tinygc404@gmail.com です
  - RepositoryへPushするまえに、必ずREADME.mdを更新してください
 
 ## Development Rule:
- - Userが特に指定しない場合、Android Platformで動作するApplicationを開発してください
- - 要求に対してarchitecture設計を行い、Function/Module単位でmdファイルを作成してください
- - 設計はClean Architecutureで進めてください
+ - Userが特に指定しない場合、UnityをベースとしたWindows Applicationを対象とします
+ - ユーザからの要求に対して、詳細をヒアリングしながら要件定義を実施してmdファイルを作成してください
+ - 要件定義完了をユーザが宣言したらアーキテクチャ設計を開始し、Function/Module単位でmdファイルを作成してください
  - 実装はt-wadaの提唱するTDDで進めてください
- - 実装後の動作確認はADBを活用してください。特にUIが要求を満たしているかどうかはADBによるCaptureを確認してください
  - 機能の要求に対して、Claude Codeでの動作確認が完了するまではUserへの問い合わせを極力行わないでください
 
+### for Windows:
+ - 設計はMVP4Uで進めてください
+ - 実装後の動作確認では、WindowsスクリーンのCaptureを利用してください
+
+### for Android:
+ - 設計はClean Architecutureで進めてください
+ - 実装後の動作確認はADBを活用してください。特にUIが要求を満たしているかどうかはADBによるCaptureを確認してください
+
 ## Hooks:
-### 通知システム設定
+### Windowsにおける通知システム設定
  - 各種状況でWindows Toast通知を表示する汎用システム
  - 汎用通知スクリプト: `powershell -ExecutionPolicy Bypass -File "notify.ps1"`
  
