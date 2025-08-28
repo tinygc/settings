@@ -3,6 +3,10 @@
   "permissions": {
     "allow": [
       "List(*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "MultiEdit(*)",
       
       // === ファイル・ディレクトリ操作（VSCode settings.jsonベース） ===
       "Bash(ls:*)",
