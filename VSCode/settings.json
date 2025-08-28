@@ -15,987 +15,180 @@
     "chat.notifyWindowOnConfirmation": true,
 
     // ターミナルコマンドのタイムアウト設定（VS Code 1.103対応）
-    "terminal.integrated.commandTimeout": 60000,
     "chat.tools.terminal.timeout": 60000,
-    "github.copilot.chat.agent.timeout": 60000,
+    "chat.tools.terminal.backgroundTimeout": 300000,
     "chat.tools.terminal.maxConcurrentCommands": 5,
+    "chat.tools.terminal.showCommandPreview": true,
+    "chat.tools.terminal.killOnTimeout": true,
 
     "chat.tools.terminal.autoApprove": {
-        // Allow List - Basic commands
-        "ls": true,
-        "ls *": true,
+        // ========== VS Code 1.103 汎用パターン統合版 ==========
         
-        // File listing with head/tail (汎用パターン)
-        "/^ls -[a-z]+ \\*\\.[a-z]+ \\| (head|tail) -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^ls -lat .*\\*.*\\.png \\| (head|tail) -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^ls -lat .*\\* \\| (head|tail) -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "ls -lat debug_after_ok_press_*.png | head -5": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^ls -lat debug_after_ok_press_\\*\\.png \\| head -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "cat *": true,
-        "head *": true,
-        "tail *": true,
-        "less *": true,
-        "more *": true,
-        "file *": true,
-        "stat *": true,
-        "wc *": true,
-        "sort *": true,
-        "uniq *": true,
-        "cut *": true,
-        "awk *": true,
-        "sed *": true,
-        "pwd": true,
-        "cd *": true,
-        "mkdir *": true,
-        
-        // VS Code 1.103 新機能: 複合コマンドのAutoApprove設定
-        // Reference: https://gihyo.jp/article/2025/08/vscode-updates-july-2025
-        
-        // cd + adb shell input 複合コマンド（分割設定）
-        "/^cd .* && adb shell input .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^cd .*TvWidget.* && adb shell input tap \\d+ \\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^cd .*TvWidget.* && adb shell input keyevent .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^cd .*TvWidget.* && adb shell input text .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB input コマンド（個別設定）
-        "/^adb shell input tap \\d+ \\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb shell input keyevent .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb shell input text .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb shell input swipe \\d+ \\d+ \\d+ \\d+.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "find *": true,
-        "du *": true,
-        "df *": true,
-        "grep *": true,
-        "rg *": true,
-        "/^grep .*$/": true,
-        "/^rg .*$/": true,
-        
-        // Grep汎用パターン（VS Code 1.103対応）
-        "/^grep -[a-zA-Z]+ .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^grep -[a-zA-Z]+ \".*\" .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^grep -[a-zA-Z]+ '.*' .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "which *": true,
-        "whereis *": true,
-        "git status": true,
-        "git log": true,
-        "git log *": true,
-        "git diff": true,
-        "git diff *": true,
-        "git branch": true,
-        "git branch *": true,
-        "git show *": true,
-        "git config list": true,
-        "git remote -v": true,
-        "/^git (status|log|diff|branch|show).*$/": true,
-        "npm list": true,
-        "npm run test": true,
-        "npm run lint": true,
-        "npm run build": true,
-        "npm run dev": true,
-        "yarn list": true,
-        "pip list": true,
-        "pip show *": true,
-        "/^npm (list|run (test|lint|build|dev)).*$/": true,
-        "make": true,
-        "make *": true,
-        
-        // Gradle build commands - VS Code 1.103 対応（統合パターン）
-        // 個別コマンドは汎用パターンでカバーするため削除し、特別な設定のみ残す
-        "./gradlew assembleDebug": { 
-            "approve": true, 
+        // === ファイル・ディレクトリ操作 ===
+        "/^(ls|pwd|cd|mkdir|find|du|df)(\\s.*)?$/i": {
+            "approve": true,
             "matchCommandLine": true,
-            "timeout": 180000 
+            "description": "Basic file and directory operations"
         },
-        "./gradlew assembleRelease": { 
-            "approve": true, 
+        "/^(cat|head|tail|less|more|file|stat|wc|sort|uniq|cut|awk|sed|cp|mv|ln|touch)(\\s.*)?$/i": {
+            "approve": true,
             "matchCommandLine": true,
-            "timeout": 300000 
+            "description": "File content and manipulation operations"
         },
-        // Gradle汎用パターン（大文字小文字区別なし）- 個別設定を統合
-        "/^\\.\\/gradlew (build|test|clean|installDebug|assemble.*|check|lint).*$/i": { 
-            "approve": true, 
+        "/^(tar\\s+-[tx]f|unzip|gunzip)\\s+/i": {
+            "approve": true,
             "matchCommandLine": true,
-            "timeout": 180000 
-        },
-        
-        // Gradle複合コマンド（VS Code 1.103の複数コマンド対応）
-        "/^\\.\\/gradlew clean && \\.\\/gradlew (assembleDebug|build|assemble.*)$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 240000 
-        },
-        "/^\\.\\/gradlew (assembleDebug|assembleRelease) && adb install -r .*\\.apk$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 180000 
-        },
-        // Gradleコマンドチェーン（セミコロン区切り）
-        "/^\\.\\/gradlew clean; \\.\\/gradlew (assembleDebug|build|assemble.*)$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 240000 
-        },
-        // Gradle + ADB連携コマンド
-        "/^cd .* && \\.\\/gradlew (assembleDebug|build|assemble.*)$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 180000 
-        },
-        "go test": true,
-        "go build": true,
-        "go fmt": true,
-        "gofmt *": true,
-        "docker ps": true,
-        "docker images": true,
-        "docker logs *": true,
-        "docker-compose ps": true,
-        "/^docker (ps|images|logs).*$/": true,
-        "whoami": true,
-        "date": true,
-        "/^date \\+.*$/": true,
-        "echo *": true,
-        "printf *": true,
-        "env": true,
-        "ps *": true,
-        "top": true,
-        "netstat *": true,
-        "lsof *": true,
-        "aws sts get-caller-identity": true,
-        "aws s3 ls": true,
-        "aws s3 ls *": true,
-        "gcloud config list": true,
-        "gcloud auth list": true,
-        "az account show": true,
-        "az account list": true,
-        "/^aws s3 (ls|cp --dryrun).*$/": true,
-        "gh pr list": true,
-        "gh pr view *": true,
-        "gh pr diff *": true,
-        "gh issue list": true,
-        "/^gh (pr|issue) (list|view|show).*$/": true,
-        "tar -tf *": true,
-        "tar -xf *": true,
-        "unzip -l *": true,
-        "unzip *": true,
-        "gunzip *": true,
-        "/^(tar -[tx]|unzip|gunzip).*$/": true,
-        // ADB基本コマンド
-        "adb devices": true,
-        "adb shell *": true,
-        "adb logcat": true,
-        
-        // ADB Install commands - VS Code 1.103 対応（複数コマンド分割パターン）
-        // Reference: https://gihyo.jp/article/2025/08/vscode-updates-july-2025
-        
-        // 基本的なadb installコマンド（単体パターン）
-        "adb install *": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "adb install -r *": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "adb install -t *": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "adb install -d *": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        
-        // APKパス汎用パターン（VS Code 1.103のmatchCommandLine機能活用）
-        "/^adb install -[rtd]+ .*\\.apk$/i": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "/^adb install .*\\/app-debug\\.apk$/i": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "/^adb install .*\\/.*-debug\\.apk$/i": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        "/^adb install.*app\\/build\\/outputs\\/apk\\/.*\\.apk$/i": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 60000 
-        },
-        
-        // 複合コマンドパターン（VS Code 1.103の複数コマンド対応）
-        "/^cd .* && adb install -r .*\\.apk$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 90000 
-        },
-        "/^\\.\\/gradlew assembleDebug && adb install -r .*\\.apk$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 240000 
-        },
-        "/^\\.\\/gradlew clean && \\.\\/gradlew assembleDebug && adb install -r .*\\.apk$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 300000 
-        },
-        
-        // ADB uninstall commands（アンインストール対応）
-        "/^adb uninstall [a-zA-Z0-9._]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 30000 
-        },
-        
-        // ADBログ取得（単体）
-        "/^adb logcat.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d$/": true,
-        "/^adb logcat -v .+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADBログ + grep（パイプ処理）- 汎用パターン拡張
-        "/^adb logcat.*\\| grep.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d \\| grep .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i \".*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i '.*'.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -v \".*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -v '.*'.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep [a-zA-Z0-9_]+.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // Android/Java デバッグ用 汎用クラス名パターン（VS Code 1.103対応）
-        "/^adb logcat.*\\| grep -i \"[A-Z][a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*Widget[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*Manager[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*Auth[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*Calendar[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*ViewModel[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*Repository[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*UseCase[a-zA-Z0-9_]*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000
-        },
-        
-        // 複数grepの組み合わせ（どんなワードでも対応）
-        "/^adb logcat.*\\| grep .* \\| grep .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i .* \\| grep -v .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i \".*\" \\| grep -v \".*\".*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i .* \\| grep -v .* \\| tail.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\| grep -i .* \\| grep -v .* \\| head.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // Androidクラス名 + 複合コマンドパターン（VS Code 1.103対応）
-        "/^adb logcat.*\\| grep -i \"[A-Z][a-zA-Z0-9_]*\" \\| grep \\d+ \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 12000
-        },
-        "/^adb logcat.*\\| grep -i \"[a-zA-Z0-9_]*(Widget|Manager|Auth|Calendar|ViewModel|Repository|UseCase)[a-zA-Z0-9_]*\" \\| grep -v \".*\" \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 12000
-        },
-        
-        // sleep + ADB複雑なコマンド（複数のパイプとgrep）- 汎用化
-        "/^sleep \\d+ && adb logcat -d \\| grep -i \".*\" \\| grep -v \".*\" \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^sleep \\d+ && adb logcat.*\\| grep .* \\| tail.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d \\| grep .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d \\| grep -i \".*\" \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d \\| grep -i .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d \\| grep [a-zA-Z0-9_\"']+ \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 8000 
-        },
-        
-        // ADB logcat -s (filtered logs with specific tags) - 汎用パターン
-        "/^adb logcat -d -s [a-zA-Z0-9_]+:D$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -s [a-zA-Z0-9_]+:D$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d -s [a-zA-Z0-9_]+:[VDIWEF]$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -s [a-zA-Z0-9_]+:[VDIWEF]$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB logcat -s with multiple tags and head/tail - 汎用パターン
-        "/^adb logcat -s [\\w:VDIWEF\\s-]+ \\| head -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -s [\\w:VDIWEF\\s-]+ \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d -s [\\w:VDIWEF\\s-]+ \\| head -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -d -s [\\w:VDIWEF\\s-]+ \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        // 複数タグの汎用パターン（どんなタグ名でも対応）
-        "/^adb logcat -s [\\w:D\\s-]+ \\| head -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -s [\\w:D\\s-]+ \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // 汎用ワードパターン（どんな単語でも対応）- 統合版
-        "/^adb logcat -d \\| grep -i \"[^\"]*\" \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 12000
-        },
-        
-        // ADB screencap commands (統合・汎用パターン)
-        "/^adb shell screencap.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb shell screencap.*> .*\\.png$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb shell screencap.*\\$\\(date.*\\).*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "adb shell screencap -p > debug_current_screen_$(date +%Y%m%d_%H%M%S).png": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB screencap + sleep combinations (汎用パターン)
-        "/^sleep \\d+ && adb shell screencap.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB screencap + pull combinations (汎用パターン)
-        "/^adb shell screencap -p \\/sdcard\\/.*\\.png && adb pull \\/sdcard\\/.*\\.png .*\\.png$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^sleep \\d+ && adb shell screencap -p \\/sdcard\\/.*\\.png && adb pull \\/sdcard\\/.*\\.png .*\\.png$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB プロセス特定コマンド - 汎用ワード対応（統合パターン）
-        "/^adb shell ps \\| grep [a-zA-Z0-9_\"']+ \\| awk .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // 一般的なgrep + tailの組み合わせ（汎用）
-        "/^grep .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^grep -i .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^grep -v .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^grep \"[^\"]+\" .* \\| tail -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB logcat with PID (特定プロセス) - 汎用ワード対応
-        "/^adb logcat -d --pid=\\$\\(adb shell ps \\| grep .* \\| awk .*\\) \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // sleep + ADB logcat with PID の複合コマンド - 汎用ワード対応
-        "/^sleep \\d+ && adb logcat -d --pid=\\$\\(adb shell ps \\| grep .* \\| awk .*\\) \\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // 汎用的なコマンド組み合わせパターン
-        "/^sleep \\d+ && adb logcat.*\\$\\(.*\\).*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat.*\\$\\(.*\\).*\\| tail -\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADBバックグラウンド処理
-        "/^adb logcat.*& *$/": true,
-        "/^adb logcat.*\\| grep.*&$/": true,
-        "/^adb logcat -c && adb logcat.*$/": true,
-        "/^adb logcat -c && adb logcat.*\\| grep.*&$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^adb logcat -c && adb logcat.*\\| grep -i.*&$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        // 汎用バックグラウンド処理パターン（どんなワードでも対応）
-        "/^adb logcat -c && adb logcat.*\\| grep -i \".*\" &$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // ADB汎用パターン
-        "/^adb (devices|shell|logcat|pull).*$/": true,
-        
-        // 汎用的なディレクトリ移動 + ADBコマンド複合パターン（VS Code 1.103対応）
-        "/^cd [^&]+ && adb .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        "/^cd .*TvWidget.* && adb (shell|logcat|devices|pull) .*$/": { 
-            "approve": true, 
-            "matchCommandLine": true 
-        },
-        
-        // 実際のユーザーコマンド（具体例）
-        "cd /home/tmori/GitHub/TvWidget/TvWidget && adb shell input tap 640 400": { 
-            "approve": true, 
-            "matchCommandLine": true 
+            "description": "Archive extraction operations"
         },
 
-        // Ask List
-        "rm *": false,
-        "rmdir *": false,
-        "rm -rf *": false,
-        "rm -f *": false,
-        "/^rm .*$/": false,
-        "sudo *": false,
-        "su *": false,
-        "chmod 777 *": false,
-        "chown *": false,
-        "/^sudo .*$/": false,
-        "/^su .*$/": false,
-        "kill *": false,
-        "killall *": false,
-        "pkill *": false,
-        "/^kill(all|) .*$/": false,
-        "curl *": false,
-        "wget *": false,
-        "ssh *": false,
-        "scp *": false,
-        "rsync *": false,
-        "/^(curl|wget|ssh|scp) .*$/": false,
-        "npm install *": false,
-        "npm uninstall *": false,
-        "yarn add *": false,
-        "yarn remove *": false,
-        "pip install *": false,
-        "pip uninstall *": false,
-        "brew install *": false,
-        "brew uninstall *": false,
-        "apt install *": false,
-        "apt remove *": false,
-        "/^(npm|yarn|pip|brew|apt) (install|uninstall|add|remove) .*$/": false,
-        "git push *": false,
-        "git reset --hard *": false,
-        "git clean -fd": false,
-        "git rebase -i *": false,
-        "git add -A": false,
-        "git commit *": false,
-        "/^git (push|reset --hard|clean|rebase -i|add -A|commit) .*$/": false,
-        "docker run *": false,
-        "docker exec *": false,
-        "docker rm *": false,
-        "docker rmi *": false,
-        "docker-compose up": false,
-        "docker-compose down": false,
-        "/^docker(-compose|) (run|exec|rm|rmi|up|down) .*$/": false,
-        "systemctl *": false,
-        "service *": false,
-        "/^(systemctl|service) .*$/": false,
-        "bash *": false,
-        "sh *": false,
-        "python *": false,
-        "node *": false,
-        "/^(bash|sh|python|node) .*$/": false,
-        "tar -cf *": false,
-        "zip *": false,
-        "gzip *": false,
-        "/^(tar -c|zip|gzip) .*$/": false,
-        "mysql *": false,
-        "psql *": false,
-        "mongo *": false,
-        "/^(mysql|psql|mongo) .*$/": false,
-        "aws s3 sync *": false,
-        "aws s3 rm *": false,
-        "gcloud compute *": false,
-        "az vm *": false,
-        "/^(aws s3 (sync|rm|cp [^-])|gcloud compute|az vm) .*$/": false,
-        
-        // ========== VS Code 1.103 新機能: ADB dumpsys 汎化パターン ==========
-        // dumpsys package 情報取得（アプリパッケージ解析）
-        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys package with grep（権限情報など）
-        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -A \\d+ \"[a-zA-Z0-9_\\s]+\"$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys package with multiple grep pattern（declared/requested permissions）
-        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -A \\d+ -B \\d+ \"[a-zA-Z0-9_\\s\\|]+\"$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys activity 情報取得
-        "/^adb shell dumpsys activity [a-zA-Z0-9_]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys account 情報取得（アカウント解析）
-        "/^adb shell dumpsys account$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys account with grep（Googleアカウント情報）
-        "/^adb shell dumpsys account \\| grep -A \\d+ -B \\d+ \"[a-zA-Z0-9_\\.]+\"$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // ========== VS Code 1.103 新機能: Activity解析パターン ==========
-        // dumpsys package with Activity grep（アクティビティ情報取得）
-        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -E \"\\([aA]ctivity\\|Activity\\)\"$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // dumpsys package with Activity grep + head/tail限定
-        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -E \"\\([aA]ctivity\\|Activity\\)\" \\| (head|tail) -?\\d+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // ========== VS Code 1.103 新機能: App管理コマンド汎化 ==========
-        // アプリ起動コマンド（メインアクティビティ）
-        "/^adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000 
-        },
-        
-        // アプリ強制停止コマンド
-        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 8000 
-        },
-        
-        // 複合コマンド: 強制停止→起動（開発用パターン）
-        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 15000 
-        },
-        
-        // ========== VS Code 1.103 新機能: Sleep付き複合コマンドパターン ==========
-        // 強制停止→sleep→起動（安全な再起動パターン）
-        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep \\d+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 20000 
-        },
-        
-        // 複数sleep付きコマンド汎化（1-10秒の範囲）
-        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep [1-9]\\d* && adb shell am start -n [a-zA-Z0-9_\\.]+\\/[a-zA-Z0-9_\\.\\-\\/]+Activity$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 25000 
-        },
-        
-        // 汎用的なアプリ再起動パターン（任意のsleep時間）
-        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep [0-9]+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/.*$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 30000 
-        },
-        
-        // 複数&&区切りコマンド汎化（3つまでのコマンド連結）
-        "/^(adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+) && (sleep \\d+|adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+) && (adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+)$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 35000 
-        },
-        
-        // ========== VS Code 1.103 新機能: 分離型コマンドパターン ==========
-        // ADBスクリーンキャプチャ基本パターン
-        "/^adb exec-out screencap -p$/": {
+        // === Git操作（読み取り専用） ===
+        "/^git\\s+(status|log|diff|branch|show|config\\s+list|remote)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 10000
+            "description": "Safe Git read operations"
         },
-        
-        // ADBスクリーンキャプチャ→ファイル出力（基本）
-        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-\\.]+\\.png$/": {
+
+        // === パッケージ管理（情報取得のみ） ===
+        "/^(npm|yarn)\\s+(list|run\\s+(test|lint|build|dev))(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 15000
+            "description": "Package manager info and build commands"
         },
-        
-        // ADBスクリーンキャプチャ→日付付きファイル出力
-        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-]+\\$\\(date \\+%Y%m%d_%H%M%S\\)\\.png$/": {
+        "/^(pip\\s+list|pip\\s+show)\\s+/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 15000
+            "description": "Python package info"
         },
-        
-        // 汎用dateコマンド式ファイル名パターン
-        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-]+.*\\$\\(date \\+[%YmdHMS_\\-]+\\).*\\.png$/": {
+
+        // === Go開発 ===
+        "/^go\\s+(test|build|fmt|mod|run)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 15000
+            "description": "Go development commands"
         },
-        
-        // 任意のプレフィックス付きスクリーンキャプチャ
-        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-\\/\\.]+\\$\\(date [^)]+\\)[a-zA-Z0-9_\\-\\.]*\\.png$/": {
+        "/^gofmt\\s+/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "Go format command"
         },
-        
-        // ========== VS Code 1.103 新機能: Sleep付きスクリーンキャプチャパターン ==========
-        // 基本的なsleep + screencapパターン
-        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-\\.]+\\.png$/": {
+
+        // === Docker（読み取り専用） ===
+        "/^docker(-compose)?\\s+(ps|images|logs)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 25000
+            "description": "Docker status operations"
         },
-        
-        // sleep + 日付付きスクリーンキャプチャ
-        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-]+\\$\\(date \\+%Y%m%d_%H%M%S\\)\\.png$/": {
+
+        // === システム情報 ===
+        "/^(whoami|date|echo|printf|env|ps|top|netstat|lsof|which|whereis)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 25000
+            "description": "System information commands"
         },
-        
-        // sleep + 汎用日付フォーマットスクリーンキャプチャ
-        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-]+.*\\$\\(date \\+[%YmdHMS_\\-]+\\).*\\.png$/": {
+
+        // === クラウドCLI（読み取り専用） ===
+        "/^aws\\s+(sts\\s+get-caller-identity|s3\\s+ls)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 30000
+            "description": "AWS read operations"
         },
-        
-        // sleep + 任意プレフィックス付きスクリーンキャプチャ
-        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-\\/\\.]+\\$\\(date [^)]+\\)[a-zA-Z0-9_\\-\\.]*\\.png$/": {
+        "/^gcloud\\s+(config\\s+list|auth\\s+list)$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 30000
+            "description": "Google Cloud info"
         },
-        
-        // ========== 汎用sleep+任意コマンドパターン ==========
-        // sleep + 任意のadbコマンド（汎化）
-        "/^sleep [0-9]+ && adb [a-zA-Z0-9_\\s\\-\\.\\\\\\/>\\$()%:]+$/": {
+        "/^az\\s+account\\s+(show|list)$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 35000
+            "description": "Azure account info"
         },
-        
-        // sleep範囲指定（1-60秒）+ adbコマンド
-        "/^sleep [1-5]?[0-9] && adb [a-zA-Z0-9_\\s\\-\\.\\\\\\/>\\$()%:]+$/": {
+
+        // === GitHub CLI（読み取り専用） ===
+        "/^gh\\s+(pr|issue)\\s+(list|view|show|diff)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 40000
+            "description": "GitHub CLI read operations"
         },
-        
-        // ========== VS Code 1.103 新機能: Sleep + Logcat パイプラインパターン ==========
-        // sleep + logcat基本パターン
-        "/^sleep \\d+ && adb logcat -d$/": {
+
+        // === Android開発（ADB統合パターン） ===
+        "/^adb\\s+(devices|shell|logcat|pull|push|install|uninstall|exec-out)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "All common ADB operations"
         },
-        
-        // sleep + logcat + grep基本パターン
-        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\"$/": {
+        "/^sleep\\s+[0-9]+\\s+&&\\s+adb\\s+/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 25000
+            "description": "Sleep + ADB command combinations"
         },
-        
-        // sleep + logcat + 複数grep（パイプ2つ）
-        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\" \\| grep -v \"[^\"]+\"$/": {
+        "/^adb\\s+logcat.*\\|.*$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 30000
+            "description": "ADB logcat with pipeline operations"
         },
-        
-        // sleep + logcat + 複数キーワードgrep + 除外grep
-        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\\|[^\"]+\" \\| grep -v \"[^\"]+\\|[^\"]+\"$/": {
+        "/^adb\\s+(shell\\s+)?screencap.*$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 30000
+            "description": "ADB screenshot operations"
         },
-        
-        // sleep + logcat + 汎用的なgrepパイプライン（3つまで）
-        "/^sleep \\d+ && adb logcat -d \\| grep[^|]+ \\| grep[^|]+( \\| grep[^|]+)?$/": {
+        "/^adb\\s+shell\\s+(am|pm|dumpsys)\\s+/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 35000
+            "description": "ADB Android system operations"
         },
-        
-        // ========== 汎用logcatパイプラインパターン（sleepなし） ==========
-        // logcat + 複数grep（デバッグ用）
-        "/^adb logcat -d \\| grep -i \"[^\"]+\" \\| grep -v \"[^\"]+\"$/": {
+
+        // === Gradle ===
+        "/^\\.\\/gradlew\\s+(clean|build|test|assemble.*|install.*|lint)(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "Gradle build commands"
         },
-        
-        // logcat + 複数キーワード + 除外パターン（汎用）
-        "/^adb logcat -d \\| grep -i \"[a-zA-Z0-9_\\|\\*\\.\\\\\\/\\s\\-]+\" \\| grep -v \"[a-zA-Z0-9_\\|\\*\\.\\\\\\/\\s\\-]+\"$/": {
+
+        // === Make ===
+        "/^make(\\s.*)?$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 25000
+            "description": "Make build commands"
         },
-        
-        // ========== VS Code 1.103 新機能: System.out ログパターン ==========
-        // 基本的なSystem.outログ確認
-        "/^adb logcat -d \\| grep \"System\\.out\"$/": {
+
+        // === Sleep コマンド ===
+        "/^sleep\\s+[0-9]+$/i": {
             "approve": true,
             "matchCommandLine": true,
-            "timeout": 15000
+            "description": "Sleep command"
         },
-        
-        // sleep + System.outログ確認
-        "/^sleep \\d+ && adb logcat -d \\| grep \"System\\.out\"$/": {
-            "approve": true,
+
+        // ========== 拒否リスト ==========
+        // 危険なコマンドは明示的に拒否
+        "/^(rm|rmdir|sudo|su|kill|killall|pkill)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "Dangerous system commands"
         },
-        
-        // System.out + 追加フィルタリング
-        "/^adb logcat -d \\| grep \"System\\.out\" \\| grep -i \"[^\"]+\"$/": {
-            "approve": true,
+        "/^(curl|wget|ssh|scp|rsync)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "Network commands requiring confirmation"
         },
-        
-        // sleep + System.out + 追加フィルタリング
-        "/^sleep \\d+ && adb logcat -d \\| grep \"System\\.out\" \\| grep -i \"[^\"]+\"$/": {
-            "approve": true,
+        "/^(npm|yarn|pip|brew|apt)\\s+(install|uninstall|add|remove)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 25000
+            "description": "Package installation commands"
         },
-        
-        // ========== 汎用ログフィルタリングパターン ==========
-        // 単一キーワードgrep（引用符なし）
-        "/^adb logcat -d \\| grep [a-zA-Z0-9_\\.]+$/": {
-            "approve": true,
+        "/^git\\s+(push|reset\\s+--hard|clean|rebase|add\\s+-A|commit)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 15000
+            "description": "Git commands that modify repository"
         },
-        
-        // sleep + 単一キーワードgrep
-        "/^sleep \\d+ && adb logcat -d \\| grep [a-zA-Z0-9_\\.]+$/": {
-            "approve": true,
+        "/^docker(-compose)?\\s+(run|exec|rm|rmi|up|down)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 20000
+            "description": "Docker modification commands"
         },
-        
-        // 特定ログタグ確認（Android標準）
-        "/^adb logcat -d \\| grep \"[A-Z][a-zA-Z0-9_]+\\.[a-z]+\"$/": {
-            "approve": true,
+        "/^(chmod\\s+777|chown)\\s+/i": {
+            "approve": false,
             "matchCommandLine": true,
-            "timeout": 15000
-        },
-        
-        // sleep + 特定ログタグ確認
-        "/^sleep \\d+ && adb logcat -d \\| grep \"[A-Z][a-zA-Z0-9_]+\\.[a-z]+\"$/": {
-            "approve": true,
-            "matchCommandLine": true,
-            "timeout": 20000
-        },
-        
-        // ========== VS Code 1.103 新機能: Intent管理パターン ==========
-        // 設定画面起動（アプリ詳細）
-        "/^adb shell am start -a android\\.settings\\.[A-Z_]+ -d package:[a-zA-Z0-9_\\.]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 10000 
-        },
-        
-        // 権限許可コマンド
-        "/^adb shell pm grant [a-zA-Z0-9_\\.]+ android\\.permission\\.[A-Z_]+$/": { 
-            "approve": true, 
-            "matchCommandLine": true,
-            "timeout": 8000 
+            "description": "Dangerous permission changes"
         }
     }
 }
