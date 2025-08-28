@@ -683,6 +683,319 @@
         "aws s3 rm *": false,
         "gcloud compute *": false,
         "az vm *": false,
-        "/^(aws s3 (sync|rm|cp [^-])|gcloud compute|az vm) .*$/": false
+        "/^(aws s3 (sync|rm|cp [^-])|gcloud compute|az vm) .*$/": false,
+        
+        // ========== VS Code 1.103 新機能: ADB dumpsys 汎化パターン ==========
+        // dumpsys package 情報取得（アプリパッケージ解析）
+        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys package with grep（権限情報など）
+        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -A \\d+ \"[a-zA-Z0-9_\\s]+\"$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys package with multiple grep pattern（declared/requested permissions）
+        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -A \\d+ -B \\d+ \"[a-zA-Z0-9_\\s\\|]+\"$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys activity 情報取得
+        "/^adb shell dumpsys activity [a-zA-Z0-9_]+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys account 情報取得（アカウント解析）
+        "/^adb shell dumpsys account$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys account with grep（Googleアカウント情報）
+        "/^adb shell dumpsys account \\| grep -A \\d+ -B \\d+ \"[a-zA-Z0-9_\\.]+\"$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // ========== VS Code 1.103 新機能: Activity解析パターン ==========
+        // dumpsys package with Activity grep（アクティビティ情報取得）
+        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -E \"\\([aA]ctivity\\|Activity\\)\"$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // dumpsys package with Activity grep + head/tail限定
+        "/^adb shell dumpsys package [a-zA-Z0-9_\\.]+ \\| grep -E \"\\([aA]ctivity\\|Activity\\)\" \\| (head|tail) -?\\d+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // ========== VS Code 1.103 新機能: App管理コマンド汎化 ==========
+        // アプリ起動コマンド（メインアクティビティ）
+        "/^adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 10000 
+        },
+        
+        // アプリ強制停止コマンド
+        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 8000 
+        },
+        
+        // 複合コマンド: 強制停止→起動（開発用パターン）
+        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 15000 
+        },
+        
+        // ========== VS Code 1.103 新機能: Sleep付き複合コマンドパターン ==========
+        // 強制停止→sleep→起動（安全な再起動パターン）
+        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep \\d+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/\\.[a-zA-Z0-9_\\.]+\\.[a-zA-Z0-9_]+Activity$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 20000 
+        },
+        
+        // 複数sleep付きコマンド汎化（1-10秒の範囲）
+        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep [1-9]\\d* && adb shell am start -n [a-zA-Z0-9_\\.]+\\/[a-zA-Z0-9_\\.\\-\\/]+Activity$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 25000 
+        },
+        
+        // 汎用的なアプリ再起動パターン（任意のsleep時間）
+        "/^adb shell am force-stop [a-zA-Z0-9_\\.]+ && sleep [0-9]+ && adb shell am start -n [a-zA-Z0-9_\\.]+\\/.*$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 30000 
+        },
+        
+        // 複数&&区切りコマンド汎化（3つまでのコマンド連結）
+        "/^(adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+) && (sleep \\d+|adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+) && (adb shell [a-zA-Z0-9_\\s\\-\\.\\\\\\\/]+)$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 35000 
+        },
+        
+        // ========== VS Code 1.103 新機能: 分離型コマンドパターン ==========
+        // ADBスクリーンキャプチャ基本パターン
+        "/^adb exec-out screencap -p$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 10000
+        },
+        
+        // ADBスクリーンキャプチャ→ファイル出力（基本）
+        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-\\.]+\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // ADBスクリーンキャプチャ→日付付きファイル出力
+        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-]+\\$\\(date \\+%Y%m%d_%H%M%S\\)\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // 汎用dateコマンド式ファイル名パターン
+        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-]+.*\\$\\(date \\+[%YmdHMS_\\-]+\\).*\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // 任意のプレフィックス付きスクリーンキャプチャ
+        "/^adb exec-out screencap -p > [a-zA-Z0-9_\\-\\/\\.]+\\$\\(date [^)]+\\)[a-zA-Z0-9_\\-\\.]*\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // ========== VS Code 1.103 新機能: Sleep付きスクリーンキャプチャパターン ==========
+        // 基本的なsleep + screencapパターン
+        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-\\.]+\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 25000
+        },
+        
+        // sleep + 日付付きスクリーンキャプチャ
+        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-]+\\$\\(date \\+%Y%m%d_%H%M%S\\)\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 25000
+        },
+        
+        // sleep + 汎用日付フォーマットスクリーンキャプチャ
+        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-]+.*\\$\\(date \\+[%YmdHMS_\\-]+\\).*\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 30000
+        },
+        
+        // sleep + 任意プレフィックス付きスクリーンキャプチャ
+        "/^sleep \\d+ && adb exec-out screencap -p > [a-zA-Z0-9_\\-\\/\\.]+\\$\\(date [^)]+\\)[a-zA-Z0-9_\\-\\.]*\\.png$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 30000
+        },
+        
+        // ========== 汎用sleep+任意コマンドパターン ==========
+        // sleep + 任意のadbコマンド（汎化）
+        "/^sleep [0-9]+ && adb [a-zA-Z0-9_\\s\\-\\.\\\\\\/>\\$()%:]+$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 35000
+        },
+        
+        // sleep範囲指定（1-60秒）+ adbコマンド
+        "/^sleep [1-5]?[0-9] && adb [a-zA-Z0-9_\\s\\-\\.\\\\\\/>\\$()%:]+$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 40000
+        },
+        
+        // ========== VS Code 1.103 新機能: Sleep + Logcat パイプラインパターン ==========
+        // sleep + logcat基本パターン
+        "/^sleep \\d+ && adb logcat -d$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // sleep + logcat + grep基本パターン
+        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 25000
+        },
+        
+        // sleep + logcat + 複数grep（パイプ2つ）
+        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\" \\| grep -v \"[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 30000
+        },
+        
+        // sleep + logcat + 複数キーワードgrep + 除外grep
+        "/^sleep \\d+ && adb logcat -d \\| grep -i \"[^\"]+\\|[^\"]+\" \\| grep -v \"[^\"]+\\|[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 30000
+        },
+        
+        // sleep + logcat + 汎用的なgrepパイプライン（3つまで）
+        "/^sleep \\d+ && adb logcat -d \\| grep[^|]+ \\| grep[^|]+( \\| grep[^|]+)?$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 35000
+        },
+        
+        // ========== 汎用logcatパイプラインパターン（sleepなし） ==========
+        // logcat + 複数grep（デバッグ用）
+        "/^adb logcat -d \\| grep -i \"[^\"]+\" \\| grep -v \"[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // logcat + 複数キーワード + 除外パターン（汎用）
+        "/^adb logcat -d \\| grep -i \"[a-zA-Z0-9_\\|\\*\\.\\\\\\/\\s\\-]+\" \\| grep -v \"[a-zA-Z0-9_\\|\\*\\.\\\\\\/\\s\\-]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 25000
+        },
+        
+        // ========== VS Code 1.103 新機能: System.out ログパターン ==========
+        // 基本的なSystem.outログ確認
+        "/^adb logcat -d \\| grep \"System\\.out\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // sleep + System.outログ確認
+        "/^sleep \\d+ && adb logcat -d \\| grep \"System\\.out\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // System.out + 追加フィルタリング
+        "/^adb logcat -d \\| grep \"System\\.out\" \\| grep -i \"[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // sleep + System.out + 追加フィルタリング
+        "/^sleep \\d+ && adb logcat -d \\| grep \"System\\.out\" \\| grep -i \"[^\"]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 25000
+        },
+        
+        // ========== 汎用ログフィルタリングパターン ==========
+        // 単一キーワードgrep（引用符なし）
+        "/^adb logcat -d \\| grep [a-zA-Z0-9_\\.]+$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // sleep + 単一キーワードgrep
+        "/^sleep \\d+ && adb logcat -d \\| grep [a-zA-Z0-9_\\.]+$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // 特定ログタグ確認（Android標準）
+        "/^adb logcat -d \\| grep \"[A-Z][a-zA-Z0-9_]+\\.[a-z]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 15000
+        },
+        
+        // sleep + 特定ログタグ確認
+        "/^sleep \\d+ && adb logcat -d \\| grep \"[A-Z][a-zA-Z0-9_]+\\.[a-z]+\"$/": {
+            "approve": true,
+            "matchCommandLine": true,
+            "timeout": 20000
+        },
+        
+        // ========== VS Code 1.103 新機能: Intent管理パターン ==========
+        // 設定画面起動（アプリ詳細）
+        "/^adb shell am start -a android\\.settings\\.[A-Z_]+ -d package:[a-zA-Z0-9_\\.]+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 10000 
+        },
+        
+        // 権限許可コマンド
+        "/^adb shell pm grant [a-zA-Z0-9_\\.]+ android\\.permission\\.[A-Z_]+$/": { 
+            "approve": true, 
+            "matchCommandLine": true,
+            "timeout": 8000 
+        }
     }
 }
