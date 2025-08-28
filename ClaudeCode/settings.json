@@ -7,8 +7,6 @@
       "Write(*)",
       "Edit(*)",
       "MultiEdit(*)",
-      
-      // === ファイル・ディレクトリ操作（VSCode settings.jsonベース） ===
       "Bash(ls:*)",
       "Bash(pwd:*)",
       "Bash(cd:*)",
@@ -36,8 +34,6 @@
       "Bash(tar:*)",
       "Bash(unzip:*)",
       "Bash(gunzip:*)",
-
-      // === Git操作（読み取り専用） ===
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",
@@ -45,24 +41,16 @@
       "Bash(git show:*)",
       "Bash(git config:*)",
       "Bash(git remote:*)",
-
-      // === パッケージ管理（情報取得・ビルドのみ） ===
       "Bash(npm:*)",
       "Bash(yarn:*)",
       "Bash(pip:*)",
       "Bash(make:*)",
-
-      // === Go開発 ===
       "Bash(go test:*)",
       "Bash(go build:*)",
       "Bash(go fmt:*)",
       "Bash(gofmt:*)",
-
-      // === Docker（読み取り専用） ===
       "Bash(docker:*)",
       "Bash(docker-compose:*)",
-
-      // === システム情報 ===
       "Bash(whoami:*)",
       "Bash(date:*)",
       "Bash(echo:*)",
@@ -74,39 +62,23 @@
       "Bash(lsof:*)",
       "Bash(which:*)",
       "Bash(whereis:*)",
-
-      // === クラウドCLI（読み取り専用） ===
       "Bash(aws sts get-caller-identity:*)",
       "Bash(aws s3 ls:*)",
       "Bash(gcloud config list:*)",
       "Bash(gcloud auth list:*)",
       "Bash(az account show:*)",
       "Bash(az account list:*)",
-
-      // === GitHub CLI（読み取り専用） ===
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
       "Bash(gh issue create:*)",
       "Bash(gh issue edit:*)",
-
-      // === Android開発（ADB統合） ===
       "Bash(adb:*)",
-
-      // === Gradle ===
       "Bash(./gradlew:*)",
-
-      // === Sleep コマンド ===
       "Bash(sleep:*)",
-
-      // === 検索・解析ツール ===
       "Bash(grep:*)",
       "Bash(rg:*)",
-
-      // === ネットワーク操作（必要最小限） ===
       "Bash(ping:*)",
-
-      // === MCP Servers ===
       "mcp__github__create_pull_request",
       "mcp__github__get_issue",
       "mcp__github__add_issue_comment",
@@ -130,14 +102,11 @@
       "mcp__serena__replace_symbol_body",
       "mcp__serena__think_about_whether_you_are_done",
       "mcp__serena__read_memory",
-
-      // === Web操作 ===
-      "WebSerch",
+      "WebSearch",
       "WebFetch(*)",
       "Fetch(https://*)"
     ],
     "ask": [
-      // === 危険なシステムコマンド ===
       "Bash(rm:*)",
       "Bash(rmdir:*)",
       "Bash(sudo:*)",
@@ -147,15 +116,11 @@
       "Bash(pkill:*)",
       "Bash(chmod 777:*)",
       "Bash(chown:*)",
-
-      // === ネットワーク接続 ===
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(ssh:*)",
       "Bash(scp:*)",
       "Bash(rsync:*)",
-
-      // === パッケージインストール ===
       "Bash(npm install:*)",
       "Bash(npm uninstall:*)",
       "Bash(yarn add:*)",
@@ -166,8 +131,6 @@
       "Bash(brew uninstall:*)",
       "Bash(apt install:*)",
       "Bash(apt remove:*)",
-
-      // === Git変更操作 ===
       "Bash(git push:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean:*)",
@@ -179,36 +142,24 @@
       "Bash(git checkout:*)",
       "Bash(git remote set-url:*)",
       "Bash(git cherry-pick:*)",
-
-      // === Docker実行操作 ===
       "Bash(docker run:*)",
       "Bash(docker exec:*)",
       "Bash(docker rm:*)",
       "Bash(docker rmi:*)",
       "Bash(docker-compose up:*)",
       "Bash(docker-compose down:*)",
-
-      // === システムサービス ===
       "Bash(systemctl:*)",
       "Bash(service:*)",
-
-      // === スクリプト実行 ===
       "Bash(bash:*)",
       "Bash(sh:*)",
       "Bash(python:*)",
       "Bash(node:*)",
-
-      // === アーカイブ作成 ===
       "Bash(tar -c:*)",
       "Bash(zip:*)",
       "Bash(gzip:*)",
-
-      // === データベース接続 ===
       "Bash(mysql:*)",
       "Bash(psql:*)",
       "Bash(mongo:*)",
-
-      // === クラウド変更操作 ===
       "Bash(aws s3 sync:*)",
       "Bash(aws s3 rm:*)",
       "Bash(aws s3 cp:*)",
