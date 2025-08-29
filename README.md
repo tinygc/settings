@@ -1,6 +1,6 @@
-# Settings Repository
+# 設定リポジトリ
 
-このリポジトリにはClaude Codeの設定と開発ガイドラインが含まれています✨
+このリポジトリにはClaude CodeとVSCodeの設定、および開発ガイドラインが含まれています✨
 
 ## 📁 Files
 
