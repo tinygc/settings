@@ -89,7 +89,7 @@ echo "======================================"
 echo ""
 
 # AGENTS.md のインストール
-if [ "$INSTALL_AGENTS" = true ]; then
+if [[ "$INSTALL_AGENTS" == "true" ]]; then
     echo "📋 AGENTS.md のインストール"
     echo "--------------------------------"
     
