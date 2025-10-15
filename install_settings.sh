@@ -67,7 +67,7 @@ case $INSTALL_CHOICE in
         ;;
     6)
         read -p "AGENTS.md をインストールしますか? (y/n): " ans
-        [[ $ans == "y" ]] && INSTALL_AGENTS=true
+        [[ $ans =~ ^[Yy]$ ]] && INSTALL_AGENTS=true
         
         read -p "VSCode settings.json をインストールしますか? (y/n): " ans
         [[ $ans == "y" ]] && INSTALL_VSCODE=true
