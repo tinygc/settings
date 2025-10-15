@@ -61,11 +61,12 @@
 ```
 
 対話形式で以下を選択できます:
-1. **すべてインストール** - AGENTS.md、VSCode設定、Claude Code設定をすべて配置（推奨）
+1. **すべてインストール** - AGENTS.md、VSCode設定、Claude Code設定、Codex CLI設定をすべて配置（推奨）
 2. **AGENTS.mdのみ** - AI開発エージェント向けガイドラインのみ
 3. **VSCode設定のみ** - VSCode settings.jsonのみ
 4. **Claude Code設定のみ** - Claude Code settings.jsonのみ
-5. **カスタム選択** - 個別に選択してインストール
+5. **Codex CLI用AGENTSのみ** - Codex CLI向けAGENTS.mdのみ
+6. **カスタム選択** - 個別に選択してインストール
 
 スクリプトの機能:
 - ✅ OS自動検出（Linux/macOS/Windows対応）
