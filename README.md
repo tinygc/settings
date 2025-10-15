@@ -5,6 +5,7 @@
 ## 📁 Files
 
 - `AGENTS.md` - AI開発エージェント向けの統一ガイドライン（Claude Code、GitHub Copilot等）
+- `install_settings.sh` - **すべての設定を一括インストールするスクリプト**
 - `ClaudeCode/` - Claude Code設定ファイル
   - `settings.json` - 安全なコマンド実行のためのallow/askリストを含む権限設定
 - `VSCode/` - VSCode設定ファイル
@@ -50,7 +51,33 @@
 
 ## インストール・設定方法
 
-### VSCode設定
+### 🎯 クイックスタート（推奨）
+
+すべての設定を一括でインストールできる統合スクリプトを用意しています:
+
+```bash
+# すべての設定を一括インストール
+./install_settings.sh
+```
+
+対話形式で以下を選択できます:
+1. **すべてインストール** - AGENTS.md、VSCode設定、Claude Code設定をすべて配置（推奨）
+2. **AGENTS.mdのみ** - AI開発エージェント向けガイドラインのみ
+3. **VSCode設定のみ** - VSCode settings.jsonのみ
+4. **Claude Code設定のみ** - Claude Code settings.jsonのみ
+5. **カスタム選択** - 個別に選択してインストール
+
+スクリプトの機能:
+- ✅ OS自動検出（Linux/macOS/Windows対応）
+- ✅ 既存設定の自動バックアップ
+- ✅ 適切な場所への自動配置
+- ✅ オプションでプロジェクト向け配置
+
+---
+
+### 個別インストール方法
+
+#### VSCode設定
 
 **配置場所**: `~/.config/Code/User/settings.json` (Linux) または `%APPDATA%\Code\User\settings.json` (Windows)
 
@@ -89,9 +116,38 @@ cp ~/.claude/settings.json ~/.claude/settings.json.backup
 
 ### AI開発エージェント設定
 
-**配置場所**: `AGENTS.md`
+**ファイル**: `AGENTS.md`
 
 Claude Code、GitHub Copilot等のAI開発エージェント向けの統一ガイドライン。開発スタイル、GitHub設定、V字開発フローなどを定義しています。
+
+#### Claude Codeでの配置
+
+```bash
+# ホームディレクトリにコピー
+cp AGENTS.md ~/AGENTS.md
+
+# または、.claude/ディレクトリにコピー
+cp AGENTS.md ~/.claude/AGENTS.md
+```
+
+Claude Codeは以下の場所からAGENTS.mdを自動的に読み込みます:
+- `~/AGENTS.md` - ホームディレクトリ
+- `~/.claude/AGENTS.md` - Claude設定ディレクトリ
+- プロジェクトルートの `AGENTS.md`
+
+#### GitHub Copilotでの利用
+
+GitHub Copilotは `.github/copilot-instructions.md` または `AGENTS.md` を参照します。
+プロジェクトごとに設定する場合:
+
+```bash
+# プロジェクトルートにコピー
+cp AGENTS.md /path/to/your/project/AGENTS.md
+
+# または .github/copilot-instructions.md として配置
+mkdir -p /path/to/your/project/.github
+cp AGENTS.md /path/to/your/project/.github/copilot-instructions.md
+```
 
 ## 設定の同期方法
 
