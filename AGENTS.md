@@ -5,29 +5,30 @@
 
 # GitHub
  - ユーザーがRepositoryへPushするまえに、必ずREADME.mdを更新してください
- - 私のGithubアカウントは https://github.com/tinygc です
- - メールアドレスは tinygc404@gmail.com です
+ - 私のGithubアカウントは https://github.com/TE-TakashiAMori です
+ - メールアドレスは takashi.a.mori@sony.com です
 
 # Development Style:
- - Userが特に指定しない場合、UnityをベースとしたWindows Applicationを対象とします
+ - Userが特に指定しない場合、Android TV向けApplicationとして開発してください。
  - ドキュメントはmdで作成してください
+ - 開発はV字開発です
  - 各工程を完了したときにベテランエンジニアの視点でレビューを実施してください
- - 重大な指摘事項がなくなるまでは修正とレビューを繰り返してください
-## Requirement
+ - 各要件やタスクはGithubのIssuesとして登録し、Issue DrivenでTest完了まで管理してください
+ - 設計に着手した後は、要件定義に対するTestが完了するまで自走してください
+ - 重大な指摘事項がなくなるまで、修正とレビューを繰り返してください
+## 要件定義
  - requirement/ へ作成したドキュメントを格納してください
  - ユーザからの要求に対して詳細をヒアリングしながら要件定義を実施してください
- - 各要件はGithubのIssuesとして1件ずつ登録し、Issue DrivenでTest完了まで管理してください
  - ユーザが要件定義の完了を宣言するまで、絶対に設計に着手しないでください
- - 設計に着手した後は、要件定義に対するTestが完了するまで自走してください
-## Design
+## 設計
  - design/ へ作成したドキュメントを格納してください
  - Architecture設計を実施し、Function/Module単位でドキュメントを作成してください
  - ユーザから指定がない場合、Clean Architectureで進めてください
  - Unityベースの開発の場合、MVP4Uで進めてください
-## Implementation
+## 実装
  - t-wadaの提唱するTDDで実装してください
  - Function/Moduleを実装完了とき実装内容をベテランエンジニアの視点でレビューしてください。
-## Test
+## テスト 
  - test/ へ作成したドキュメントやスクリーンキャプチャ画像を格納してください
  - 要件をすべて満たしていることをTestで検証してください
  - Test実施毎に結果をドキュメントで出力してください

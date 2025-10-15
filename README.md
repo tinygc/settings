@@ -4,37 +4,38 @@
 
 ## 📁 Files
 
+- `AGENTS.md` - AI開発エージェント向けの統一ガイドライン（Claude Code、GitHub Copilot等）
 - `ClaudeCode/` - Claude Code設定ファイル
-  - `CLAUDE.md` - Claude Code開発ガイドラインとプロジェクト設定
   - `settings.json` - 安全なコマンド実行のためのallow/askリストを含む権限設定
 - `VSCode/` - VSCode設定ファイル
   - `settings.json` - 包括的なコマンド自動承認設定を含むVSCodeユーザー設定
-  - `copilot-instructions.md` - GitHub Copilot向け開発ガイドライン
 
 ## 🎯 開発スタイル
 
 ### 基本方針
-- **ターゲット**: UnityベースのWindows Application（特に指定がない場合）
+- **ターゲット**: Android TV向けApplication（特に指定がない場合）
+- **開発モデル**: V字開発を基本とする
 - **ドキュメント**: Markdownで作成
 - **レビュー**: 各工程完了時にベテランエンジニア視点でレビュー実施
 - **品質管理**: 重大な指摘事項がなくなるまで修正とレビューを繰り返し
+- **タスク管理**: 各要件・タスクをGitHub Issuesとして登録し、Issue DrivenでTest完了まで管理
+- **自走開発**: 設計着手後は要件定義に対するTestが完了するまで自走
 
 ### 開発フロー
-1. **要件定義 (Requirement)** → `requirement/`
+1. **要件定義** → `requirement/`
    - ユーザー要求の詳細ヒアリング
-   - GitHub Issuesとして1件ずつ登録（Issue Driven開発）
    - ユーザーの完了宣言まで設計着手禁止
 
-2. **設計 (Design)** → `design/`
+2. **設計** → `design/`
    - Architecture設計実施
    - Function/Module単位でドキュメント作成
    - Clean Architecture採用（Unity開発時はMVP4U）
 
-3. **実装 (Implementation)**
+3. **実装**
    - t-wadaのTDD（テスト駆動開発）で実装
    - Function/Module完了時にベテランエンジニア視点レビュー
 
-4. **テスト (Test)** → `test/`
+4. **テスト** → `test/`
    - 要件充足性をTestで検証
    - Test結果をドキュメント出力
    - Windows: スクリーンキャプチャ
@@ -86,11 +87,11 @@ cp ~/.claude/settings.json ~/.claude/settings.json.backup
 - MCP Servers設定も含む
 - Android開発（ADB）、Git、パッケージ管理等をカバー
 
-### VSCode Copilot設定
+### AI開発エージェント設定
 
-**配置場所**: `VSCode/copilot-instructions.md`
+**配置場所**: `AGENTS.md`
 
-GitHub Copilotの動作を統制するためのインストラクションファイル。Claude Codeと同様の開発スタイルを維持できます。
+Claude Code、GitHub Copilot等のAI開発エージェント向けの統一ガイドライン。開発スタイル、GitHub設定、V字開発フローなどを定義しています。
 
 ## 設定の同期方法
 
@@ -106,10 +107,10 @@ cp ~/.config/Code/User/settings.json VSCode/settings.json
 cp ~/.claude/settings.json ClaudeCode/settings.json
 ```
 
-3. **VSCode Copilot設定を変更した場合**:
+3. **AI開発エージェント設定を変更した場合**:
 ```bash
-# Copilot設定をリポジトリに反映
-# (通常は手動でcopilot-instructions.mdを編集)
+# AGENTS.mdを直接編集
+vim AGENTS.md
 ```
 
 4. **設定をGitにコミット**:
@@ -136,8 +137,8 @@ git push
 - **MCP Servers**: screenshot MCPサーバー設定を含む
 
 ### GitHub設定
-- **アカウント**: https://github.com/tinygc
-- **メールアドレス**: tinygc404@gmail.com
+- **アカウント**: https://github.com/TE-TakashiAMori
+- **メールアドレス**: takashi.a.mori@sony.com
 - **Push前チェック**: README.md更新必須
 
 ## 🚀 使用方法
@@ -146,9 +147,10 @@ git push
 
 ### 開発開始手順
 1. 設定ファイルを適切な場所にコピー
-2. CLAUDE.mdの開発ガイドラインに従ってプロジェクト開始
+2. AGENTS.mdの開発ガイドラインに従ってプロジェクト開始
 3. Issue Driven開発でタスク管理
-4. TDD + Clean Architectureで実装
-5. 各工程でベテランエンジニア視点レビュー実施
+4. V字開発モデルに沿って進行
+5. TDD + Clean Architectureで実装
+6. 各工程でベテランエンジニア視点レビュー実施
 
 すべての開発プロジェクトでこの設定を活用し、高品質なソフトウェア開発を実現しましょう〜💫
