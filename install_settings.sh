@@ -199,7 +199,7 @@ if [ "$INSTALL_CLAUDE" = true ]; then
         
         # バックアップの作成
         if [ -f ~/.claude/settings.json ]; then
-            BACKUP_FILE=~/.claude/settings.json.backup.$(date +%Y%m%d_%H%M%S)
+            BACKUP_FILE="$HOME/.claude/settings.json.backup.$(date +%Y%m%d_%H%M%S)"
             cp ~/.claude/settings.json "${BACKUP_FILE}"
             echo "📦 既存の設定をバックアップ: ${BACKUP_FILE}"
         fi
