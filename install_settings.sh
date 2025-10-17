@@ -99,19 +99,25 @@ if [[ "$INSTALL_AGENTS" == "true" ]]; then
         echo "❌ エラー: AGENTS.md が見つかりません"
         echo "   場所: ${AGENTS_FILE}"
     else
-        # ホームディレクトリに配置
+        # GitHub Copilot用にAGENTS.mdとして配置
         if cp "${AGENTS_FILE}" ~/AGENTS.md; then
-            echo "✅ ~/AGENTS.md に配置完了"
+            echo "✅ ~/AGENTS.md に配置完了（GitHub Copilot用）"
         else
             echo "⚠️  ~/AGENTS.md への配置に失敗しました"
         fi
         
-        # .claudeディレクトリに配置
+        # Claude Code用にCLAUDE.mdとして配置
         mkdir -p ~/.claude
-        if cp "${AGENTS_FILE}" ~/.claude/AGENTS.md; then
-            echo "✅ ~/.claude/AGENTS.md に配置完了"
+        if cp "${AGENTS_FILE}" ~/CLAUDE.md; then
+            echo "✅ ~/CLAUDE.md に配置完了（Claude Code用）"
         else
-            echo "⚠️  ~/.claude/AGENTS.md への配置に失敗しました"
+            echo "⚠️  ~/CLAUDE.md への配置に失敗しました"
+        fi
+        
+        if cp "${AGENTS_FILE}" ~/.claude/CLAUDE.md; then
+            echo "✅ ~/.claude/CLAUDE.md に配置完了（Claude Code用）"
+        else
+            echo "⚠️  ~/.claude/CLAUDE.md への配置に失敗しました"
         fi
     fi
     

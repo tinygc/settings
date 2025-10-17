@@ -55,9 +55,19 @@
 
 すべての設定を一括でインストールできる統合スクリプトを用意しています:
 
+#### Linux/macOS の場合
 ```bash
 # すべての設定を一括インストール
 ./install_settings.sh
+```
+
+#### Windows (PowerShell) の場合
+```powershell
+# すべての設定を一括インストール
+.\install_settings.ps1
+
+# ヘルプ表示
+.\install_settings.ps1 -Help
 ```
 
 対話形式で以下を選択できます:
@@ -69,10 +79,11 @@
 6. **カスタム選択** - 個別に選択してインストール
 
 スクリプトの機能:
-- ✅ OS自動検出（Linux/macOS/Windows対応）
+- ✅ OS自動検出（Linux/macOS対応、Windows用PowerShell版も提供）
 - ✅ 既存設定の自動バックアップ
 - ✅ 適切な場所への自動配置
 - ✅ オプションでプロジェクト向け配置
+- ✅ エラーハンドリングと詳細なログ出力
 
 ---
 
@@ -86,8 +97,11 @@
 # Linux/macOS
 cp VSCode/settings.json ~/.config/Code/User/settings.json
 
-# Windows
+# Windows (Command Prompt)
 copy VSCode\settings.json %APPDATA%\Code\User\settings.json
+
+# Windows (PowerShell)
+Copy-Item VSCode\settings.json $env:APPDATA\Code\User\settings.json
 ```
 
 **機能**:
@@ -102,11 +116,17 @@ copy VSCode\settings.json %APPDATA%\Code\User\settings.json
 **配置場所**: `~/.claude/settings.json`
 
 ```bash
-# 設定ファイルをコピー
+# Linux/macOS
 cp ClaudeCode/settings.json ~/.claude/settings.json
 
-# バックアップを作成する場合
+# Windows (PowerShell)
+Copy-Item ClaudeCode\settings.json $env:USERPROFILE\.claude\settings.json
+
+# バックアップを作成する場合 (Linux/macOS)
 cp ~/.claude/settings.json ~/.claude/settings.json.backup
+
+# バックアップを作成する場合 (Windows PowerShell)
+Copy-Item $env:USERPROFILE\.claude\settings.json $env:USERPROFILE\.claude\settings.json.backup
 ```
 
 **機能**:
@@ -124,17 +144,27 @@ Claude Code、GitHub Copilot等のAI開発エージェント向けの統一ガ�
 #### Claude Codeでの配置
 
 ```bash
-# ホームディレクトリにコピー
+# Linux/macOS
 cp AGENTS.md ~/AGENTS.md
-
-# または、.claude/ディレクトリにコピー
 cp AGENTS.md ~/.claude/AGENTS.md
+# Claude Code用にCLAUDE.mdとしてもコピー
+cp AGENTS.md ~/CLAUDE.md
+cp AGENTS.md ~/.claude/CLAUDE.md
+
+# Windows (PowerShell)
+Copy-Item AGENTS.md $env:USERPROFILE\AGENTS.md
+Copy-Item AGENTS.md $env:USERPROFILE\.claude\AGENTS.md
+# Claude Code用にCLAUDE.mdとしてもコピー
+Copy-Item AGENTS.md $env:USERPROFILE\CLAUDE.md
+Copy-Item AGENTS.md $env:USERPROFILE\.claude\CLAUDE.md
 ```
 
-Claude Codeは以下の場所からAGENTS.mdを自動的に読み込みます:
-- `~/AGENTS.md` - ホームディレクトリ
-- `~/.claude/AGENTS.md` - Claude設定ディレクトリ
-- プロジェクトルートの `AGENTS.md`
+**注意**: Claude Codeは `CLAUDE.md` を読み込むため、インストールスクリプトは自動的に `AGENTS.md` を `CLAUDE.md` としてもコピーします。
+
+Claude Code/GitHub Copilotは以下の場所からガイドラインを自動的に読み込みます:
+- `~/AGENTS.md` / `~/CLAUDE.md` - ホームディレクトリ
+- `~/.claude/AGENTS.md` / `~/.claude/CLAUDE.md` - Claude設定ディレクトリ
+- プロジェクトルートの `AGENTS.md` / `CLAUDE.md`
 
 #### GitHub Copilotでの利用
 
@@ -183,6 +213,21 @@ git push
 - **Ask List**: システムに影響を与える可能性があるコマンドは確認必須
 - 設定の変更は必ずテストを実施してから適用すること
 - バックアップファイルを定期的に作成すること
+
+### PowerShellでの実行許可設定
+
+Windows環境でPowerShellスクリプトを実行する際、Execution Policyによりブロックされる場合があります：
+
+```powershell
+# 現在のExecution Policyを確認
+Get-ExecutionPolicy
+
+# スクリプト実行を許可（推奨）
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# またはスクリプトの署名をバイパス（一時的）
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+```
 
 ## 📊 設定詳細
 
