@@ -68,6 +68,9 @@
       "Bash(gcloud auth list:*)",
       "Bash(az account show:*)",
       "Bash(az account list:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh auth login:*)",
+      "Bash(gh api:*)",
       "Bash(gh pr list:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
@@ -79,31 +82,10 @@
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(ping:*)",
-      "mcp__github__create_pull_request",
-      "mcp__github__get_issue",
-      "mcp__github__add_issue_comment",
-      "mcp__github__get_issue_comments",
-      "mcp__devinwiki__read_wiki_contents",
-      "mcp__devinwiki__ask_question",
-      "mcp__serena__check_onboarding_performed",
-      "mcp__serena__onboarding",
-      "mcp__serena__list_dir",
-      "mcp__serena__read_file",
-      "mcp__serena__get_symbols_overview",
-      "mcp__serena__write_memory",
-      "mcp__serena__create_text_file",
-      "mcp__serena__find_symbol",
-      "mcp__serena__search_for_pattern",
-      "mcp__serena__replace_regex",
-      "mcp__serena__think_about_collected_information",
-      "mcp__serena__find_file",
-      "mcp__serena__think_about_task_adherence",
-      "mcp__serena__execute_shell_command",
-      "mcp__serena__replace_symbol_body",
-      "mcp__serena__think_about_whether_you_are_done",
-      "mcp__serena__read_memory",
+      "mcp__github__*",
+      "mcp__serena__*",
       "WebSearch",
-      "WebFetch(*)",
+      "WebFetch(domain:*)",
       "Fetch(https://*)"
     ],
     "ask": [
@@ -173,8 +155,11 @@
   "mcpServers": {
     "screenshot": {
       "command": "node",
-      "args": ["/home/tmori/GitHub/Developer/mcp/screenshot/screenshot-server.js"],
+      "args": [
+        "/home/tmori/GitHub/Developer/mcp/screenshot/screenshot-server.js"
+      ],
       "env": {}
     }
-  }
+  },
+  "alwaysThinkingEnabled": false
 }
