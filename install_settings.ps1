@@ -21,6 +21,7 @@ function Show-Help {
     Write-Host ""
     Write-Host "このスクリプトは以下を適切な場所に配置します:"
     Write-Host "- AGENTS.md (Claude Code、GitHub Copilot用)"
+    Write-Host "- copilot-instructions.md (GitHub Copilot グローバル)"
     Write-Host "- VSCode settings.json"
     Write-Host "- Claude Code settings.json"
     Write-Host "- Codex CLI AGENTS.md"
@@ -144,11 +145,97 @@ if ($InstallAgents) {
             Write-Host "⚠️  $ClaudeDir\CLAUDE.md への配置に失敗しました" -ForegroundColor Yellow
             Write-Host "   エラー: $($_.Exception.Message)" -ForegroundColor Red
         }
+        
+        # GitHub Copilot グローバル用 copilot-instructions.md
+        try {
+            Copy-Item $AgentsFile "$VSCodeConfigDir\copilot-instructions.md" -Force
+            Write-Host "✅ $VSCodeConfigDir\copilot-instructions.md に配置完了（GitHub Copilot用）" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️  $VSCodeConfigDir\copilot-instructions.md への配置に失敗しました" -ForegroundColor Yellow
+            Write-Host "   エラー: $($_.Exception.Message)" -ForegroundColor Red
+        }
     }
     
     Write-Host ""
 }
 
+# VSCode ユーザー全体へのSubAgents/検証スクリプト配置（グローバル運用）
+if ($InstallAgents) {
+    Write-Host "🌐 VSCodeユーザー設定へグローバル配置" -ForegroundColor Green
+    Write-Host "--------------------------------" -ForegroundColor Green
+
+    # SubAgents のグローバル配置
+    $RepoSubAgentsDir = Join-Path $ScriptDir "SubAgents"
+    $GlobalSubAgentsDir = Join-Path $VSCodeConfigDir "SubAgents"
+    if (Test-Path $RepoSubAgentsDir) {
+        if (-not (Test-Path $GlobalSubAgentsDir)) {
+            New-Item -Path $GlobalSubAgentsDir -ItemType Directory -Force | Out-Null
+        }
+        try {
+            Copy-Item (Join-Path $RepoSubAgentsDir "*.md") $GlobalSubAgentsDir -Force
+            Write-Host "✅ SubAgents を $GlobalSubAgentsDir に配置しました" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️ SubAgents の配置に失敗しました: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "⚠️ リポジトリ内に SubAgents が見つかりません: $RepoSubAgentsDir" -ForegroundColor Yellow
+    }
+
+    # 検証スクリプトのグローバル配置
+    $RepoValidator = Join-Path $ScriptDir "validate_subagents.ps1"
+    $UserScriptsDir = Join-Path $VSCodeConfigDir "scripts"
+    if (-not (Test-Path $UserScriptsDir)) {
+        New-Item -Path $UserScriptsDir -ItemType Directory -Force | Out-Null
+    }
+    if (Test-Path $RepoValidator) {
+        try {
+            Copy-Item $RepoValidator (Join-Path $UserScriptsDir "validate_subagents.ps1") -Force
+            Write-Host "✅ 検証スクリプトを $UserScriptsDir に配置しました" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️ 検証スクリプトの配置に失敗しました: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "⚠️ validate_subagents.ps1 が見つかりません: $RepoValidator" -ForegroundColor Yellow
+    }
+
+    # ユーザータスクの作成（存在しない場合のみ）
+    $UserTasksPath = Join-Path $VSCodeConfigDir "tasks.json"
+    if (-not (Test-Path $UserTasksPath)) {
+        $tasksJson = @'
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Validate Sub Agents",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "${env:APPDATA}\\Code\\User\\scripts\\validate_subagents.ps1",
+        "-RepoRoot",
+        "${env:APPDATA}\\Code\\User"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
+'@
+        try {
+            $tasksJson | Out-File -FilePath $UserTasksPath -Encoding UTF8 -Force
+            Write-Host "✅ ユーザータスクを作成しました: $UserTasksPath" -ForegroundColor Green
+        } catch {
+            Write-Host "⚠️ ユーザータスクの作成に失敗しました: $($_.Exception.Message)" -ForegroundColor Yellow
+        }
+    } else {
+        Write-Host "ℹ️ 既存のユーザー tasks.json が見つかりました。必要なら以下を手動で追記してください:" -ForegroundColor Cyan
+        Write-Host "    - タスク名: Validate Sub Agents" -ForegroundColor Cyan
+        Write-Host "    - コマンド: pwsh -NoProfile -File ${env:APPDATA}\Code\User\scripts\validate_subagents.ps1 -RepoRoot ${env:APPDATA}\Code\User" -ForegroundColor Cyan
+    }
+
+    Write-Host ""
+}
 # Codex CLI 用 AGENTS のインストール
 if ($InstallCodex) {
     Write-Host "📋 Codex CLI 用 AGENTS のインストール" -ForegroundColor Green
@@ -352,8 +439,9 @@ if ($InstallAgents) {
     Write-Host "  [AGENTS.md]" -ForegroundColor Cyan
     Write-Host "    - $env:USERPROFILE\AGENTS.md"
     Write-Host "    - $env:USERPROFILE\.claude\AGENTS.md"
+    Write-Host "  [Copilot Instructions]" -ForegroundColor Cyan
+    Write-Host "    - $VSCodeConfigDir\copilot-instructions.md"
     if ($ProjectRoot -and (Test-Path $ProjectRoot)) {
-        Write-Host "    - $ProjectRoot\AGENTS.md"
         Write-Host "    - $ProjectRoot\.github\copilot-instructions.md"
     }
 }
@@ -371,6 +459,10 @@ if ($InstallCodex) {
 if ($InstallVSCode) {
     Write-Host "  [VSCode settings.json]" -ForegroundColor Cyan
     Write-Host "    - $VSCodeConfigDir\settings.json"
+    Write-Host "  [VSCode User SubAgents/Validator]" -ForegroundColor Cyan
+    Write-Host "    - $VSCodeConfigDir\SubAgents\*.md"
+    Write-Host "    - $VSCodeConfigDir\scripts\validate_subagents.ps1"
+    Write-Host "    - $VSCodeConfigDir\tasks.json (存在しない場合は作成)"
 }
 
 if ($InstallClaude) {

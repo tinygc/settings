@@ -1,3 +1,28 @@
+# settings
+
+このリポジトリはVS Codeや各種エージェント設定を管理します。
+
+## Sub Agents 構成
+- Persona: SubAgents/Persona.md
+- GitHub: SubAgents/GitHub.md
+- Development Style: SubAgents/Development.md
+- Requirements: SubAgents/Requirements.md
+- Design: SubAgents/Design.md
+- Implementation: SubAgents/Implementation.md
+- Test: SubAgents/Test.md
+
+各用途に応じて該当ファイルを参照・更新してください。
+
+## 検証スクリプト
+Sub AgentsのYAMLメタデータを検証するPowerShellスクリプトを用意しています。
+
+実行例:
+
+```powershell
+pwsh -NoProfile -File settings/validate_subagents.ps1
+```
+
+終了コードは`FAIL`がある場合は`1`、無ければ`0`です。`WARN`は参考情報として出力されます。
 # 設定リポジトリ
 
 このリポジトリにはClaude CodeとVSCodeの設定、および開発ガイドラインが含まれています✨
